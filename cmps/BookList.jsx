@@ -3,13 +3,12 @@ import {BookPreview} from './BookPreview.jsx'
 export function BookList({books, onSelectedBookId}) {
   return (
     <ul className="book-list clean-list grid">
-      {books.map((book, idx) => {
-        const imgNum = idx + 1
+      {books.map((book) => {
         return (
           <li key={book.id}>
-            <BookPreview book={book} imgNum={imgNum} />
+            <BookPreview book={book} />
             <section>
-              <button onClick={() => onSelectedBookId(book.id, imgNum)}>Details</button>
+              <button onClick={() => onSelectedBookId(book.id)}>Details</button>
             </section>
           </li>
         )

@@ -1,5 +1,6 @@
 import {utilService} from './util.service.js'
 import {storageService} from './async-storage.service.js'
+import {getDemoBooks} from './book-api-demo.js'
 
 const BOOK_KEY = 'bookDB'
 var gFilterBy = {txt: '', price: 0}
@@ -17,16 +18,15 @@ export const bookService = {
 }
 
 function query(gFilterBy) {
-  return storageService.query(BOOK_KEY)
-  .then((books) => {
+  return storageService.query(BOOK_KEY).then((books) => {
     if (gFilterBy.txt) {
       const regex = new RegExp(gFilterBy.txt, 'i')
       books = books.filter((book) => regex.test(book.title))
     }
     if (gFilterBy.price) {
-        const filterPrice = +gFilterBy.price
-        books = books.filter(book => +book.listPrice.amount >= filterPrice)
-      console.log('Books after price filter:', books);
+      const filterPrice = +gFilterBy.price
+      books = books.filter((book) => +book.listPrice.amount >= filterPrice)
+      console.log('Books after price filter:', books)
     }
     return books
   })
@@ -77,16 +77,13 @@ function getNextBookId(bookId) {
 function _createBooks() {
   let books = utilService.loadFromStorage(BOOK_KEY)
   if (!books || !books.length) {
-    books = []
-    books.push(_createBook('Metus Hendrerit', {amount: 109, currencyCode: 'EUR', isOnSale: false}))
-    books.push(_createBook('Morbi', {amount: 44, currencyCode: 'USD', isOnSale: true}))
-    books.push(_createBook('At Viverra Venenatis', {amount: 88, currencyCode: 'ILS', isOnSale: false}))
+    books = getDemoBooks()
     utilService.saveToStorage(BOOK_KEY, books)
   }
 }
 
-function _createBook(title, listPrice) {
-  const book = getEmptyBook(title, listPrice)
-  book.id = utilService.makeId()
-  return book
-}
+// function _createBook(title, listPrice) {
+//   const book = getEmptyBook(title, listPrice)
+//   book.id = utilService.makeId()
+//   return book
+// }
