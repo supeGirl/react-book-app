@@ -14,6 +14,18 @@
     background-color: var(--clr1bg);
 }
 
+.book-price {
+    font-size: 1.2rem;
+  }
+  
+  .book-price.red {
+    color: red ;
+  }
+  
+  .book-price.green {
+    color: green;
+  }
+
 .sale{
     background-color: rgb(204, 12, 57);
     color: snow;

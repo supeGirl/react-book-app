@@ -7,7 +7,11 @@ import {LongTxtCSS} from './LongTxtCss.jsx'
 
 export function BookDetails({onBack, bookId}) {
   const [book, setBook] = useState(null)
-  const [features, setFeatures] = useState({level: '', vintageStatus: '', priceClass: ''})
+  const [features, setFeatures] = useState({
+    level: '',
+    vintageStatus: '',
+    priceClass: '',
+  })
 
   useEffect(() => {
     loadBook()
@@ -88,11 +92,11 @@ export function BookDetails({onBack, bookId}) {
         <LongTxtCSS txt={book.description} length={50} />
       </div>
 
-      <div className={`book-price ${features.priceClass}`}>
+      <div className={`book-price ${getPriceColorClass(book.listPrice.amount)}`}>
         <p>
           Price: {book.listPrice.amount} {utilService.getCurrencySymbol(book.listPrice.currencyCode)}
         </p>
-        {book.isOnSale && <p className="on-sale">On Sale!</p>}
+        {book.listPrice.isOnSale && <span className="sale"> On Sale</span>}
       </div>
 
       <div className="action-btns container">
