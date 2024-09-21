@@ -3,12 +3,19 @@
   --clr2:rgb(234, 219, 200);
 
   --clr1bg:rgb(254, 250, 246);
-  --clr1bg-light: rgb(205, 221, 200);
   --clr2bg: rgb(218, 192, 163);
   --clr2bg-light:rgb(248, 240, 229);
 
   --gray1: rgb(240, 240, 240);
   --gray2: rgb(155, 155, 155);
   --gray3: rgb(44, 44, 44);
+
+  
+  --clr3: rgb(28, 78, 121); /* A darker shade of clr1 */
+  --clr4: rgb(255, 223, 186); /* A lighter shade of clr2 */
+  --clr1bg-dark: rgb(225, 220, 210); /* A darker background color */
+  --clr2bg-dark: rgb(185, 161, 133); /* A darker version of clr2bg */
+  --gray4: rgb(200, 200, 200); /* A lighter gray */
+
 
 } 

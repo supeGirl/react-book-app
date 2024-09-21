@@ -5,7 +5,7 @@ import {utilService} from '../services/util.service.js'
 import {LongTxt} from './LongTxt.jsx'
 import {LongTxtCSS} from './LongTxtCss.jsx'
 
-export function BookDetails({onBack, bookId}) {
+export function BookDetails({onBack, bookId, onEdit}) {
   const [book, setBook] = useState(null)
   const [features, setFeatures] = useState({
     level: '',
@@ -101,6 +101,7 @@ export function BookDetails({onBack, bookId}) {
 
       <div className="action-btns container">
         <button onClick={onBack}>Back</button>
+        <button onClick={onEdit}>Edit</button>
       </div>
     </section>
   )

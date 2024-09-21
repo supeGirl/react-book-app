@@ -1,0 +1,73 @@
+/* Editor Styles */
+.book-edit {
+  background-color: var(--clr1bg-light);
+  border: 1px solid var(--clr2bg);
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: clamp(300px, 80vw, 600px);
+  margin: 2rem auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.book-edit h2 {
+  color: var(--clr1);
+  margin-bottom: 1rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.book-edit .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  color: var(--gray3);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid var(--gray2);
+  border-radius: 4px;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--clr1);
+  background-color: var(--clr1bg);
+  outline: none;
+}
+
+.book-edit .form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1em;
+}
+
+.form-group-checkbox input[type="checkbox"]{
+    margin: 0;
+    display: grid;
+    justify-content: space-around;
+}
+
+.book-edit button {
+  padding: 0.6em 1.2em;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+}
+
+@media (max-width: 600px) {
+  .book-edit {
+    padding: 1.5rem;
+  }
+
+  .form-group label {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+  }
+}
