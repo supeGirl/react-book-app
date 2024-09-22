@@ -53,8 +53,6 @@
 
 .form-group-checkbox input[type="checkbox"]{
     margin: 0;
-    display: grid;
-    justify-content: space-around;
 }
 
 .book-edit button {

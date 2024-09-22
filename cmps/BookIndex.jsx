@@ -49,7 +49,7 @@ export function BookIndex() {
   }
 
   function onRemoveBook(bookId) {
-    const isConfirmed = confirm(`YOu sure?`)
+    const isConfirmed = confirm(`You sure?`)
     if (!isConfirmed) return
 
     bookService

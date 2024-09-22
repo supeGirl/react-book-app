@@ -138,7 +138,6 @@ export function BookEdit({bookId, onSaveBook, onBack}) {
         </div>
 
         <div className="form-group-checkbox">
-            <label htmlFor="isOnSale">On Sale:</label>
             <input
                 type="checkbox"
                 id="isOnSale"
@@ -146,6 +145,7 @@ export function BookEdit({bookId, onSaveBook, onBack}) {
                 checked={bookToEdit.listPrice.isOnSale}
                 onChange={handleChange}
             />
+            <label htmlFor="isOnSale"> On Sale</label>
         </div>
 
         <div className="form-actions">
