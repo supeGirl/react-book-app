@@ -2,9 +2,6 @@ import {utilService} from '../services/util.service.js'
 
 export function BookPreview({book}) {
   const currencySymbol = utilService.getCurrencySymbol(book.listPrice.currencyCode)
-  // const imgFileName = `${imgNum}.jpg`
-  // console.log('imgFileName', imgFileName)
-  // console.log('Image Path:', `../assets/img/${imgFileName}`)
 
   function getDefaultUrl(ev) {
     ev.target.src = 'https://via.placeholder.com/150'

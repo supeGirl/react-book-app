@@ -6,7 +6,7 @@ import {utilService} from '../services/util.service.js'
 import {LongTxtCSS} from '../cmps/LongTxtCss.jsx'
 
 export function BookDetails() {
-  const params = useParams()
+  const params = useParams()  
   const navigate = useNavigate()
   const [book, setBook] = useState(null)
   const [features, setFeatures] = useState({
@@ -15,9 +15,7 @@ export function BookDetails() {
     priceClass: '',
   })
 
-  useEffect(() => {
-    console.log('from details');
-    
+  useEffect(() => {    
     loadBook()
   }, [params.bookId])
 
@@ -27,6 +25,7 @@ export function BookDetails() {
       .then(setBook)
       .catch((err) => {
         console.log(`Problem getting book.. ${err}`)
+        showErrorMsg(`Problem getting book details..`)
         navigate('/book')
       })
   }
@@ -107,7 +106,6 @@ export function BookDetails() {
 
       <button onClick={onBack}>Back</button>
       <section className="action-btns container">
-        {/* <button onClick={onEdit}>Edit</button> */}
         <button>
           <Link to={`/book/${book.prevbookId}`}>Prev book</Link>
         </button>

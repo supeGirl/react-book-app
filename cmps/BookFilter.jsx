@@ -2,10 +2,7 @@ const {useEffect, useState} = React
 
 export function BookFilter({filterBy, onSetFilterBy}) {
   const [filterByToEdit, setFilterByToEdit] = useState({...filterBy})
-  // console.log('filterBy', JSON.stringify(filterBy, null, 2))
 
-  // Temporarily disabled to prevent filtering on every input change,
-  // enabling filtering only on submit
   useEffect(() => {
     onSetFilterBy(filterByToEdit)
   }, [filterByToEdit])

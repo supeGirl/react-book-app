@@ -1,4 +1,3 @@
-const {useState} = React
 const Router = ReactRouterDOM.HashRouter
 const {Routes, Route, Navigate} = ReactRouterDOM
 
@@ -9,6 +8,8 @@ import {AppHeader} from './cmps/AppHeader.jsx'
 import { BookEdit } from './pages/BookEdit.jsx'
 import { BookDetails } from './pages/BookDetails.jsx'
 import {NotFound} from './cmps/NotFound.jsx'
+import { UserMsg } from "./cmps/UserMsg.jsx"
+
 
 export function App() {
   return (
@@ -27,6 +28,7 @@ export function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
+        <UserMsg />
       </section>
     </Router>
   )

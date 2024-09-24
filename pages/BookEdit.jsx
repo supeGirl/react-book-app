@@ -8,24 +8,20 @@ export function BookEdit() {
   const {bookId} = useParams()
   const navigate = useNavigate()
 
-  console.log('bookId', bookId);
-  
-  console.log('bookToEdit', bookToEdit)
-
   useEffect(() => {
-    console.log('hey from EDIT');
     
     if (bookId) loadBook()
   }, [])
 
   function loadBook() {
-    console.log('hey form edit');
     
     bookService
       .get(bookId)
       .then(setBookToEdit)
       .catch((err) => {
         console.error(`Had issues loading editor... ${err}`)
+        showErrorMsg(`Problems loading editor..`)
+
         navigate('/book')
       })
   }
@@ -70,9 +66,12 @@ export function BookEdit() {
     .then(book=>{})
     .catch(err => {
       console.log(`problem saving book ${err}`)
+      showErrorMsg(`Problem saving book..`)
+
     })
     .finally(()=> {
       navigate('/book')
+      showSuccessMsg(`Book saved successfully!`)
     })
 
   }

@@ -1,24 +1,47 @@
 .user-msg {
-    background-color: lightgray;
-    padding: .5em 1em;
     position: fixed;
-    bottom: 0;
-    right: 1em;
-    color: white;
-    font-weight: bold;
-    border-radius: 2px;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: #f1f1f1;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-in-out;
+
 }
 
 .user-msg.success {
-    background-color: var(--clr1);
-}
-
-.user-msg.error {
     background-color: var(--clr2);
 }
 
+.user-msg.error {
+    background-color: var(--clr4);
+    color: red;
+    font-weight: bold;
+}
+.user-msg h4 {
+    margin: 0;
+    margin-bottom: 0.5rem;
+}
 
-.user-msg button{
-    float: right;
-    margin: 1em;
+.close-btn {
+    background-color: var(--clr2bg);
+    position: fixed;
+    top: 0.5rem;
+    right: 1rem;
+    border: none;
+    cursor: pointer;
+    font-size: 0.7rem;
+    width: fit-content;
+    aspect-ratio: 1;
+    align-self: end;
+    color: inherit;
+    margin-top: 1rem;
+}
+
+.close-btn:hover{
+   background-color: var(--clr2bg-light); 
 }
