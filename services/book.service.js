@@ -4,13 +4,7 @@ import {getDemoBooks} from './book-api-demo.js'
 
 const BOOK_KEY = 'bookDB'
 _createBooks()
-var gFilterBy = {
-  title: '',
-  maxPrice: 0,
-  minPrice: 0,
-  category: '',
-  isOnSale: false
-}
+
 
 export const bookService = {
   query,
@@ -22,32 +16,16 @@ export const bookService = {
   getFilterBy,
 }
 
-
 function query(filterBy = {}) {
-  return storageService.query(BOOK_KEY)
-      .then(books => {
-          books = _getFilteredBooks(books, filterBy)
-          return books
-      })
+  return storageService.query(BOOK_KEY).then((books) => {
+    books = _getFilteredBooks(books, filterBy)
+    return books
+  })
 }
-
-// function query(gFilterBy) {
-//   return storageService.query(BOOK_KEY).then((books) => {
-//     if (gFilterBy.txt) {
-//       const regex = new RegExp(gFilterBy.txt, 'i')
-//       books = books.filter((book) => regex.test(book.title))
-//     }
-//     if (gFilterBy.price) {
-//       const filterPrice = +gFilterBy.price
-//       books = books.filter((book) => +book.listPrice.amount >= filterPrice)
-//       console.log('Books after price filter:', books)
-//     }
-//     return books
-//   })
-// }
 
 function get(bookId) {
   return storageService.get(BOOK_KEY, bookId)
+  .then(book => _setNextPrevBookId(book))
 }
 
 function remove(bookId) {
@@ -62,11 +40,23 @@ function save(book) {
   }
 }
 
-function getEmptyBook(title = '', listPrice = {amount: 0, currencyCode: 'USD', isOnSale: false}) {
+function getEmptyBook() {
   return {
     id: utilService.makeId(),
-    title,
-    listPrice,
+    authors: [],
+    categories: [],
+    description: '',
+    language:'',
+    listPrice: {
+      amount:0,
+      currencyCode: 'USD',
+      isOnSale: false,
+    },
+    pageCount: 0,
+    publishedDate:2024,
+    subtitle:'',
+    thumbnail:'',
+    title:'',
   }
 }
 
@@ -76,15 +66,6 @@ function getFilterBy() {
     maxPrice: 0,
   }
 }
-
-// function setFilterBy(filterBy = {}) {
-//   if (filterBy.title !== undefined) gFilterBy.title = filterBy.title;
-//   if (filterBy.maxPrice !== undefined) gFilterBy.maxPrice = filterBy.maxPrice
-//   if (filterBy.minPrice !== undefined) gFilterBy.minPrice = filterBy.minPrice
-//   if (filterBy.category !== undefined) gFilterBy.category = filterBy.category
-//   if (filterBy.isOnSale !== undefined) gFilterBy.isOnSale = filterBy.isOnSale
-//     return gFilterBy
-// }
 
 function getNextBookId(bookId) {
   return storageService.query(BOOK_KEY).then((books) => {
@@ -105,26 +86,31 @@ function _createBooks() {
 function _getFilteredBooks(books, filterBy) {
   if (filterBy.title) {
     const regExp = new RegExp(filterBy.title, 'i')
-    books = books.filter(book => regExp.test(book.title))
+    books = books.filter((book) => regExp.test(book.title))
   }
   if (filterBy.maxPrice) {
-    books = books.filter(book => book.listPrice.amount <= filterBy.maxPrice)
+    books = books.filter((book) => book.listPrice.amount <= filterBy.maxPrice)
   }
   if (filterBy.minPrice) {
-    books = books.filter(book => book.listPrice.amount >= filterBy.minPrice)
+    books = books.filter((book) => book.listPrice.amount >= filterBy.minPrice)
   }
   if (filterBy.category) {
-    books = books.filter(book => book.categories.includes(filterBy.category))
+    books = books.filter((book) => book.categories.includes(filterBy.category))
   }
   if (filterBy.isOnSale) {
-    books = books.filter(book => book.listPrice.isOnSale)
+    books = books.filter((book) => book.listPrice.isOnSale)
   }
 
   return books
 }
 
-// function _createBook(title, listPrice) {
-//   const book = getEmptyBook(title, listPrice)
-//   book.id = utilService.makeId()
-//   return book
-// }
+function _setNextPrevBookId(book) {
+  return query().then((books) => {
+      const bookIdx = books.findIndex((currbook) => currbook.id === book.id)
+      const nextbook = books[bookIdx + 1] ? books[bookIdx + 1] : books[0]
+      const prevbook = books[bookIdx - 1] ? books[bookIdx - 1] : books[books.length - 1]
+      book.nextbookId = nextbook.id
+      book.prevbookId = prevbook.id
+      return book
+  })
+}

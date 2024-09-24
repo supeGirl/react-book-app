@@ -1,11 +1,13 @@
 const {useState, useEffect} = React
+const {useParams, useNavigate, Link} = ReactRouterDOM
 
 import {bookService} from '../services/book.service.js'
 import {utilService} from '../services/util.service.js'
-import {LongTxt} from './LongTxt.jsx'
-import {LongTxtCSS} from './LongTxtCss.jsx'
+import {LongTxtCSS} from '../cmps/LongTxtCss.jsx'
 
-export function BookDetails({onBack, bookId, onEdit}) {
+export function BookDetails() {
+  const params = useParams()
+  const navigate = useNavigate()
   const [book, setBook] = useState(null)
   const [features, setFeatures] = useState({
     level: '',
@@ -14,17 +16,18 @@ export function BookDetails({onBack, bookId, onEdit}) {
   })
 
   useEffect(() => {
+    console.log('from details');
+    
     loadBook()
-  }, [])
+  }, [params.bookId])
 
   function loadBook() {
     bookService
-      .get(bookId)
-      .then((book) => {
-        setBook(book)
-      })
+      .get(params.bookId)
+      .then(setBook)
       .catch((err) => {
         console.log(`Problem getting book.. ${err}`)
+        navigate('/book')
       })
   }
 
@@ -63,6 +66,10 @@ export function BookDetails({onBack, bookId, onEdit}) {
     ev.target.src = 'https://via.placeholder.com/150'
   }
 
+  function onBack() {
+    navigate('/book')
+  }
+
   if (!book) return <h1>Loading..</h1>
 
   return (
@@ -88,7 +95,6 @@ export function BookDetails({onBack, bookId, onEdit}) {
           {book.categories.join(', ')}
         </p>
 
-        <LongTxt txt={book.description} />
         <LongTxtCSS txt={book.description} length={50} />
       </div>
 
@@ -99,10 +105,16 @@ export function BookDetails({onBack, bookId, onEdit}) {
         {book.listPrice.isOnSale && <span className="sale"> On Sale</span>}
       </div>
 
-      <div className="action-btns container">
-        <button onClick={onBack}>Back</button>
-        <button onClick={onEdit}>Edit</button>
-      </div>
+      <button onClick={onBack}>Back</button>
+      <section className="action-btns container">
+        {/* <button onClick={onEdit}>Edit</button> */}
+        <button>
+          <Link to={`/book/${book.prevbookId}`}>Prev book</Link>
+        </button>
+        <button>
+          <Link to={`/book/${book.nextbookId}`}>Next book</Link>
+        </button>
+      </section>
     </section>
   )
 }
