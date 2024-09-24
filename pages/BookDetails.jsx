@@ -4,25 +4,31 @@ const {useParams, useNavigate, Link} = ReactRouterDOM
 import {bookService} from '../services/book.service.js'
 import {utilService} from '../services/util.service.js'
 import {LongTxtCSS} from '../cmps/LongTxtCss.jsx'
+import {AddReview} from '../cmps/AddReview.jsx'
 
 export function BookDetails() {
-  const params = useParams()  
+  const params = useParams()
   const navigate = useNavigate()
   const [book, setBook] = useState(null)
+  const [reviews, setReviews] = useState([])
+  const [isAddReviewOpen, setIsAddReviewOpen] = useState(false)
   const [features, setFeatures] = useState({
     level: '',
     vintageStatus: '',
     priceClass: '',
   })
 
-  useEffect(() => {    
+  useEffect(() => {
     loadBook()
   }, [params.bookId])
 
   function loadBook() {
     bookService
       .get(params.bookId)
-      .then(setBook)
+      .then((book) => {
+        setBook(book)
+        setReviews(book.reviews || [])
+      })
       .catch((err) => {
         console.log(`Problem getting book.. ${err}`)
         showErrorMsg(`Problem getting book details..`)
@@ -40,6 +46,18 @@ export function BookDetails() {
 
     setFeatures((prev) => ({...prev, ...featuresFromBook}))
   }, [book])
+
+  function onAddReview(newReview) {
+    bookService.addReview(book.id, newReview).then(() => {
+      setReviews((prevReviews) => [...prevReviews, newReview])
+    })
+  }
+
+  function onRemoveReview(idx) {
+    const updatedReviews = reviews.filter((_, i) => i !== idx)
+    setReviews(updatedReviews)
+    bookService.updateReviews(book.id, updatedReviews)
+  }
 
   function getReadingLevel(pageCount) {
     if (pageCount > 500) return 'Serious Reading'
@@ -65,6 +83,21 @@ export function BookDetails() {
     ev.target.src = 'https://via.placeholder.com/150'
   }
 
+  function toggleAddReview() {
+    setIsAddReviewOpen(!isAddReviewOpen)
+  }
+
+  function renderStars(rating) {
+    const fullStar = '★'
+    const emptyStar = '☆'
+    return (
+      <span>
+        {fullStar.repeat(rating)}
+        {emptyStar.repeat(5 - rating)}
+      </span>
+    )
+  }
+
   function onBack() {
     navigate('/book')
   }
@@ -73,6 +106,11 @@ export function BookDetails() {
 
   return (
     <section className="book-details">
+      
+      <button onClick={onBack}>Back</button>
+      <button onClick={toggleAddReview}>{isAddReviewOpen ? 'Close' : 'Add Review'}</button>
+      {isAddReviewOpen && <AddReview onAddReview={onAddReview} />}
+
       <div className="book-header">
         <h2 className="book-title">{book.title}</h2>
         {book.subtitle && <h3 className="book-subtitle">{book.subtitle}</h3>}
@@ -104,7 +142,25 @@ export function BookDetails() {
         {book.listPrice.isOnSale && <span className="sale"> On Sale</span>}
       </div>
 
-      <button onClick={onBack}>Back</button>
+      <section className="reviews-list">
+        <h3>Reviews</h3>
+        {!reviews.length ? (
+          <p>No reviews yet.</p>
+        ) : (
+          <ul>
+            {reviews.map((review, idx) => (
+              <li key={idx}>
+                <p>
+                  <strong>{review.fullname}</strong> rated it {renderStars(review.rating)}{' '}
+                </p>
+                <p>Read on: {new Date(review.readAt).toLocaleDateString()}</p>
+                <button onClick={() => onRemoveReview(idx)}>Delete</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       <section className="action-btns container">
         <button>
           <Link to={`/book/${book.prevbookId}`}>Prev book</Link>

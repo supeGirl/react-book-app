@@ -14,6 +14,9 @@ export const bookService = {
   getEmptyBook,
   getNextBookId,
   getFilterBy,
+  addReview,
+  removeReview,
+  updateReviews,
 }
 
 function query(filterBy = {}) {
@@ -38,6 +41,29 @@ function save(book) {
   } else {
     return storageService.post(BOOK_KEY, book)
   }
+}
+
+function addReview(bookId, review) {
+  return get(bookId).then((book) => {
+    if (!book.reviews) book.reviews = []
+    book.reviews.push(review)
+    return save(book) 
+  })
+}
+
+function removeReview(bookId, reviewIdx) {
+  return get(bookId).then((book) => {
+    if (!book.reviews || reviewIdx < 0 || reviewIdx >= book.reviews.length) return Promise.reject('Invalid review index')
+    book.reviews.splice(reviewIdx, 1) 
+    return save(book) 
+  })
+}
+
+function updateReviews(bookId, reviews) {
+  return get(bookId).then((book) => {
+    book.reviews = reviews
+    return save(book) 
+  })
 }
 
 function getEmptyBook() {
