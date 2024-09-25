@@ -5,6 +5,7 @@ import {showErrorMsg, showSuccessMsg, showUserMsg} from '../services/event-bus.s
 import {bookService} from '../services/book.service.js'
 import {BookFilter} from '../cmps/BookFilter.jsx'
 import {BookList} from '../cmps/BookList.jsx'
+import {AppLoader} from '../cmps/AppLoader.jsx'
 
 export function BookIndex() {
   const [books, setBooks] = useState(null)
@@ -44,7 +45,7 @@ export function BookIndex() {
     setFilterBy({...filterBy})
   }
 
-  if (!books) return <h1>Loading....</h1>
+  if (!books) return <AppLoader />
 
   return (
     <section className="book-index">

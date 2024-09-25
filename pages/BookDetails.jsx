@@ -5,6 +5,7 @@ import {bookService} from '../services/book.service.js'
 import {utilService} from '../services/util.service.js'
 import {LongTxtCSS} from '../cmps/LongTxtCss.jsx'
 import {AddReview} from '../cmps/AddReview.jsx'
+import { AppLoader } from '../cmps/AppLoader.jsx'
 
 export function BookDetails() {
   const params = useParams()
@@ -102,11 +103,10 @@ export function BookDetails() {
     navigate('/book')
   }
 
-  if (!book) return <h1>Loading..</h1>
+  if (!book) return <AppLoader />
 
   return (
     <section className="book-details">
-      
       <button onClick={onBack}>Back</button>
       <button onClick={toggleAddReview}>{isAddReviewOpen ? 'Close' : 'Add Review'}</button>
       {isAddReviewOpen && <AddReview onAddReview={onAddReview} />}
