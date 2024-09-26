@@ -5,7 +5,6 @@ import {getDemoBooks} from './book-api-demo.js'
 const BOOK_KEY = 'bookDB'
 _createBooks()
 
-
 export const bookService = {
   query,
   get,
@@ -27,8 +26,7 @@ function query(filterBy = {}) {
 }
 
 function get(bookId) {
-  return storageService.get(BOOK_KEY, bookId)
-  .then(book => _setNextPrevBookId(book))
+  return storageService.get(BOOK_KEY, bookId).then((book) => _setNextPrevBookId(book))
 }
 
 function remove(bookId) {
@@ -47,42 +45,43 @@ function addReview(bookId, review) {
   return get(bookId).then((book) => {
     if (!book.reviews) book.reviews = []
     book.reviews.push(review)
-    return save(book) 
+    return save(book)
   })
 }
 
 function removeReview(bookId, reviewIdx) {
   return get(bookId).then((book) => {
-    if (!book.reviews || reviewIdx < 0 || reviewIdx >= book.reviews.length) return Promise.reject('Invalid review index')
-    book.reviews.splice(reviewIdx, 1) 
-    return save(book) 
+    if (!book.reviews || reviewIdx < 0 || reviewIdx >= book.reviews.length)
+      return Promise.reject('Invalid review index')
+    book.reviews.splice(reviewIdx, 1)
+    return save(book)
   })
 }
 
 function updateReviews(bookId, reviews) {
   return get(bookId).then((book) => {
     book.reviews = reviews
-    return save(book) 
+    return save(book)
   })
 }
 
 function getEmptyBook() {
   return {
     id: utilService.makeId(),
+    title: '',
+    subtitle: '',
     authors: [],
-    categories: [],
+    publishedDate: 2024,
     description: '',
-    language:'',
+    pageCount: 0,
+    categories: [],
+    thumbnail: '',
+    language: '',
     listPrice: {
-      amount:0,
+      amount: 0,
       currencyCode: 'USD',
       isOnSale: false,
     },
-    pageCount: 0,
-    publishedDate:2024,
-    subtitle:'',
-    thumbnail:'',
-    title:'',
   }
 }
 
@@ -102,11 +101,35 @@ function getNextBookId(bookId) {
 }
 
 function _createBooks() {
-  let books = utilService.loadFromStorage(BOOK_KEY)
-  if (!books || !books.length) {
-    books = getDemoBooks()
-    utilService.saveToStorage(BOOK_KEY, books)
+  const categories = ['Love', 'Fiction', 'Poetry', 'Computers', 'Religion']
+  const books = utilService.loadFromStorage(BOOK_KEY) || []
+
+  if (books && books.length) return
+
+  for (let i = 0; i < 20; i++) {
+      const book = {
+          id: utilService.makeId(),
+          title: utilService.makeLorem(2),
+          subtitle: utilService.makeLorem(4),
+          authors: [
+              utilService.makeLorem(1)
+          ],
+          publishedDate: utilService.getRandomIntInclusive(1950, 2024),
+          description: utilService.makeLorem(20),
+          pageCount: utilService.getRandomIntInclusive(20, 600),
+          categories: [categories[utilService.getRandomIntInclusive(0, ctgs.length - 1)]],
+          thumbnail: `/assets/booksImages/${i + 1}.jpg`,
+          language: "en",
+          listPrice: {
+              amount: utilService.getRandomIntInclusive(80, 500),
+              currencyCode: "EUR",
+              isOnSale: Math.random() > 0.7
+          },
+          reviews: []
+      }
+      books.push(book)
   }
+  utilService.saveToStorage(BOOK_KEY, books)
 }
 
 function _getFilteredBooks(books, filterBy) {
@@ -132,11 +155,11 @@ function _getFilteredBooks(books, filterBy) {
 
 function _setNextPrevBookId(book) {
   return query().then((books) => {
-      const bookIdx = books.findIndex((currbook) => currbook.id === book.id)
-      const nextbook = books[bookIdx + 1] ? books[bookIdx + 1] : books[0]
-      const prevbook = books[bookIdx - 1] ? books[bookIdx - 1] : books[books.length - 1]
-      book.nextbookId = nextbook.id
-      book.prevbookId = prevbook.id
-      return book
+    const bookIdx = books.findIndex((currbook) => currbook.id === book.id)
+    const nextbook = books[bookIdx + 1] ? books[bookIdx + 1] : books[0]
+    const prevbook = books[bookIdx - 1] ? books[bookIdx - 1] : books[books.length - 1]
+    book.nextbookId = nextbook.id
+    book.prevbookId = prevbook.id
+    return book
   })
 }

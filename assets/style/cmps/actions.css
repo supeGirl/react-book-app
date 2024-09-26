@@ -1,0 +1,14 @@
+p.back-btn {
+  position: relative;
+  cursor: pointer;
+  left: -1.8em;
+  padding: 10px;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+
+.prev-next-btn{
+    display: flex;
+    justify-content: space-between;
+}

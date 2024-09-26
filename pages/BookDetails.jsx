@@ -5,7 +5,8 @@ import {bookService} from '../services/book.service.js'
 import {utilService} from '../services/util.service.js'
 import {LongTxtCSS} from '../cmps/LongTxtCss.jsx'
 import {AddReview} from '../cmps/AddReview.jsx'
-import { AppLoader } from '../cmps/AppLoader.jsx'
+import {AppLoader} from '../cmps/AppLoader.jsx'
+
 
 export function BookDetails() {
   const params = useParams()
@@ -62,9 +63,8 @@ export function BookDetails() {
 
   function getReadingLevel(pageCount) {
     if (pageCount > 500) return 'Serious Reading'
-    else if (pageCount > 200) return 'Decent Reading'
-    else if (pageCount < 100) return 'Light Reading'
-    return ''
+    if (pageCount > 200) return 'Decent Reading'
+    return 'Light Reading'
   }
 
   function getVintageStatus(publishedDate) {
@@ -107,9 +107,10 @@ export function BookDetails() {
 
   return (
     <section className="book-details">
-      <button onClick={onBack}>Back</button>
-      <button onClick={toggleAddReview}>{isAddReviewOpen ? 'Close' : 'Add Review'}</button>
-      {isAddReviewOpen && <AddReview onAddReview={onAddReview} />}
+      <p className="back-btn" onClick={onBack}>Back to library</p>
+      {/* <button onClick={toggleAddReview}>{isAddReviewOpen ? 'Close' : 'Add Review'}</button> */}
+      {/* {isAddReviewOpen && <AddReview onAddReview={onAddReview} />} */}
+      {/* make it modal for user */}
 
       <div className="book-header">
         <h2 className="book-title">{book.title}</h2>
@@ -137,9 +138,9 @@ export function BookDetails() {
 
       <div className={`book-price ${getPriceColorClass(book.listPrice.amount)}`}>
         <p>
-          Price: {book.listPrice.amount} {utilService.getCurrencySymbol(book.listPrice.currencyCode)}
-        </p>
+          Price: {utilService.getCurrencySymbol(book.listPrice.currencyCode)} {book.listPrice.amount}
         {book.listPrice.isOnSale && <span className="sale"> On Sale</span>}
+        </p>
       </div>
 
       <section className="reviews-list">
@@ -161,7 +162,7 @@ export function BookDetails() {
         )}
       </section>
 
-      <section className="action-btns container">
+      <section className="prev-next-btn container">
         <button>
           <Link to={`/book/${book.prevbookId}`}>Prev book</Link>
         </button>
