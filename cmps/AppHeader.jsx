@@ -12,9 +12,12 @@ export function AppHeader() {
       <section>
         <h1>BOOXIØ</h1>
         <nav className="app-nav">
-         <NavLink to="/home">Home</NavLink>
-         <NavLink to="/about">About Us</NavLink>
-         <NavLink to="/book">Books</NavLink>
+         <NavLink to="/home" className="nav-link"> 
+         <i className="fa-solid fa-house-chimney"></i>Home</NavLink>
+         <NavLink to="/about" className="nav-link">
+         <i className="fa-solid fa-circle-info"></i>About Us</NavLink>
+         <NavLink to="/book" className="nav-link">
+         <i className="fa-solid fa-book"></i>Books</NavLink>
         </nav>
       </section>
     </header>

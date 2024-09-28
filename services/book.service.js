@@ -13,9 +13,9 @@ export const bookService = {
   getEmptyBook,
   getNextBookId,
   getFilterBy,
-  addReview,
+  saveReview,
   removeReview,
-  updateReviews,
+  getEmptyReview
 }
 
 function query(filterBy = {}) {
@@ -41,29 +41,22 @@ function save(book) {
   }
 }
 
-function addReview(bookId, review) {
+function saveReview(bookId, reviewToSave) {
   return get(bookId).then((book) => {
-    if (!book.reviews) book.reviews = []
-    book.reviews.push(review)
-    return save(book)
+    const review = _createReview(reviewToSave)
+    book.reviews.unshift(review)
+    return save(book).then(() => review)
   })
 }
 
-function removeReview(bookId, reviewIdx) {
-  return get(bookId).then((book) => {
-    if (!book.reviews || reviewIdx < 0 || reviewIdx >= book.reviews.length)
-      return Promise.reject('Invalid review index')
-    book.reviews.splice(reviewIdx, 1)
+function removeReview(bookId, reviewId) {
+  return get(bookId).then(book => {
+    const newReviews = book.reviews.filter((review) => review.id !== reviewId)
+    book.reviews = newReviews
     return save(book)
-  })
+})
 }
 
-function updateReviews(bookId, reviews) {
-  return get(bookId).then((book) => {
-    book.reviews = reviews
-    return save(book)
-  })
-}
 
 function getEmptyBook() {
   return {
@@ -92,6 +85,17 @@ function getFilterBy() {
   }
 }
 
+function getEmptyReview() {
+  return {
+      fullName: 'new name',
+      rating: 0,
+      date: new Date().toISOString().slice(0, 10),
+      txt: '',
+      selected: 0,
+  }
+}
+
+
 function getNextBookId(bookId) {
   return storageService.query(BOOK_KEY).then((books) => {
     let nextBookIdx = books.findIndex((book) => book.id === bookId) + 1
@@ -99,6 +103,8 @@ function getNextBookId(bookId) {
     return books[nextBookIdx].id
   })
 }
+
+// ~~~~~~~~~~~~~~~~LOCAL FUNCTIONS~~~~~~~~~~~~~~~~~~~
 
 function _createBooks() {
   const categories = ['Love', 'Fiction', 'Poetry', 'Computers', 'Religion']
@@ -132,6 +138,13 @@ function _createBooks() {
   utilService.saveToStorage(BOOK_KEY, books)
 }
 
+function _createReview(reviewToSave) {
+  return {
+      id: utilService.makeId(),
+      ...reviewToSave,
+  }
+}
+
 function _getFilteredBooks(books, filterBy) {
   if (filterBy.title) {
     const regExp = new RegExp(filterBy.title, 'i')
@@ -163,3 +176,5 @@ function _setNextPrevBookId(book) {
     return book
   })
 }
+
+

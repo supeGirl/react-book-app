@@ -1,24 +1,31 @@
 const {useState, useEffect} = React
-const {useParams, useNavigate, Link} = ReactRouterDOM
+const {useParams, useNavigate} = ReactRouter
+const {Link} = ReactRouterDOM
 
 import {bookService} from '../services/book.service.js'
 import {utilService} from '../services/util.service.js'
 import {LongTxtCSS} from '../cmps/LongTxtCss.jsx'
 import {AddReview} from '../cmps/AddReview.jsx'
 import {AppLoader} from '../cmps/AppLoader.jsx'
-
+import {ReviewList} from '../cmps/ReviewList.jsx'
+import {showErrorMsg} from '../services/event-bus.service.js'
 
 export function BookDetails() {
-  const params = useParams()
-  const navigate = useNavigate()
   const [book, setBook] = useState(null)
   const [reviews, setReviews] = useState([])
+  const [isLoadingReview, setIsLoadingReview] = useState(false)
   const [isAddReviewOpen, setIsAddReviewOpen] = useState(false)
+
+  const [isShowReviewModal, setIsShowReviewModal] = useState(null)
+
   const [features, setFeatures] = useState({
     level: '',
     vintageStatus: '',
     priceClass: '',
   })
+
+  const params = useParams()
+  const navigate = useNavigate()
 
   useEffect(() => {
     loadBook()
@@ -49,18 +56,6 @@ export function BookDetails() {
     setFeatures((prev) => ({...prev, ...featuresFromBook}))
   }, [book])
 
-  function onAddReview(newReview) {
-    bookService.addReview(book.id, newReview).then(() => {
-      setReviews((prevReviews) => [...prevReviews, newReview])
-    })
-  }
-
-  function onRemoveReview(idx) {
-    const updatedReviews = reviews.filter((_, i) => i !== idx)
-    setReviews(updatedReviews)
-    bookService.updateReviews(book.id, updatedReviews)
-  }
-
   function getReadingLevel(pageCount) {
     if (pageCount > 500) return 'Serious Reading'
     if (pageCount > 200) return 'Decent Reading'
@@ -84,19 +79,37 @@ export function BookDetails() {
     ev.target.src = 'https://via.placeholder.com/150'
   }
 
-  function toggleAddReview() {
-    setIsAddReviewOpen(!isAddReviewOpen)
+  function onAddReview(newReview) {
+    setIsLoadingReview(true)
+    bookService
+      .saveReview(book.id, newReview)
+      .then((review) => {
+        const updatedReviews = [review, ...reviews]
+        setReviews(updatedReviews)
+        setBook((prevBook) => ({...prevBook, reviews: updatedReviews}))
+        onToggleReviewModal()
+      })
+      .catch((err) => {
+        console.log(`Problem get review ${err}`)
+        showErrorMsg(`Review to ${book.title} Failed!`).finally(() => setIsLoadingReview(false))
+      })
+      .finally(() => setIsLoadingReview(false))
   }
 
-  function renderStars(rating) {
-    const fullStar = '★'
-    const emptyStar = '☆'
-    return (
-      <span>
-        {fullStar.repeat(rating)}
-        {emptyStar.repeat(5 - rating)}
-      </span>
-    )
+  function onRemoveReview(reviewId) {
+    setIsLoadingReview(true)
+    bookService
+      .removeReview(book.id, reviewId)
+      .then(() => {
+        const filteredReviews = book.reviews.filter((review) => review.id !== reviewId)
+        setBook({...book, reviews: filteredReviews})
+      })
+      .finally(() => setIsLoadingReview(false))
+  }
+
+  function onToggleReviewModal() {
+    setIsShowReviewModal((prevIsReviewModal) => !prevIsReviewModal)
+    setIsAddReviewOpen((prev) => !prev)
   }
 
   function onBack() {
@@ -106,68 +119,72 @@ export function BookDetails() {
   if (!book) return <AppLoader />
 
   return (
-    <section className="book-details">
-      <p className="back-btn" onClick={onBack}>Back to library</p>
-      {/* <button onClick={toggleAddReview}>{isAddReviewOpen ? 'Close' : 'Add Review'}</button> */}
-      {/* {isAddReviewOpen && <AddReview onAddReview={onAddReview} />} */}
-      {/* make it modal for user */}
-
-      <div className="book-header">
+    <section className="book-details  main-layout flex flex-column">
+      <p className="back-btn" onClick={onBack}>
+        Back to library
+      </p>
+      <div className="book-header justify-center flex ">
         <h2 className="book-title">{book.title}</h2>
-        {book.subtitle && <h3 className="book-subtitle">{book.subtitle}</h3>}
-        <img className="book-thumbnail" src={book.thumbnail} onError={getDefaultUrl} alt={`${book.title} cover`} />
       </div>
 
-      <div className="book-info">
-        <p>
-          <span className="bold">Authors:</span> {book.authors.join(', ')}
-        </p>
-        <p>
-          <span className="bold">Published:</span> {book.publishedDate} {features.vintageStatus}
-        </p>
-        <p>
-          <span className="bold">Page Count:</span> {book.pageCount} {features.level}
-        </p>
-        <p>
-          <span className="bold">Categories: </span>
-          {book.categories.join(', ')}
-        </p>
+      <div className="book-info flex mb-2">
+        <img className="book-thumbnail" src={book.thumbnail} onError={getDefaultUrl} alt={`${book.title} cover`} />
 
+        <div className="book-details-text flex flex-column justify-between mb-2">
+          <h3 className="book-subtitle">{book.subtitle}</h3>
+          <p>
+            <span className="bold">Authors:</span> {book.authors.join(', ')}
+          </p>
+          <p>
+            <span className="bold">Published:</span> {book.publishedDate} {features.vintageStatus}
+          </p>
+          <p>
+            <span className="bold">Page Count:</span> {book.pageCount} {features.level}
+          </p>
+          <p>
+            <span className="bold">Categories: </span> {book.categories.join(', ')}
+          </p>
+        </div>
+      </div>
+
+      <div className="book-description mb-2">
         <LongTxtCSS txt={book.description} length={50} />
       </div>
 
-      <div className={`book-price ${getPriceColorClass(book.listPrice.amount)}`}>
+      <div className={`book-price ${getPriceColorClass(book.listPrice.amount)} mb-2`}>
         <p>
           Price: {utilService.getCurrencySymbol(book.listPrice.currencyCode)} {book.listPrice.amount}
-        {book.listPrice.isOnSale && <span className="sale"> On Sale</span>}
+          {book.listPrice.isOnSale && <span className="sale"> On Sale</span>}
         </p>
       </div>
 
-      <section className="reviews-list">
+      <div className="brake-line "></div>
+
+      <div>
+        <button onClick={onToggleReviewModal}>{isShowReviewModal ? 'Close Review' : 'Add Review'}</button>
+        {isShowReviewModal && <AddReview toggleReview={onToggleReviewModal} onAddReview={onAddReview} />}
+      </div>
+      {/* {isShowReviewModal && <AddReview toggleReview={onToggleReviewModal} onAddReview={onAddReview} />} */}
+
+      <section className="reviews-container mb-2">
         <h3>Reviews</h3>
-        {!reviews.length ? (
+        {isLoadingReview ? (
+          <p>Loading reviews...</p>
+        ) : reviews.length === 0 ? (
           <p>No reviews yet.</p>
         ) : (
-          <ul>
-            {reviews.map((review, idx) => (
-              <li key={idx}>
-                <p>
-                  <strong>{review.fullname}</strong> rated it {renderStars(review.rating)}{' '}
-                </p>
-                <p>Read on: {new Date(review.readAt).toLocaleDateString()}</p>
-                <button onClick={() => onRemoveReview(idx)}>Delete</button>
-              </li>
-            ))}
-          </ul>
+          <ReviewList reviews={reviews} onRemoveReview={onRemoveReview} />
         )}
       </section>
 
-      <section className="prev-next-btn container">
+      <section className="prev-next-btn flex justify-between">
         <button>
-          <Link to={`/book/${book.prevbookId}`}>Prev book</Link>
+          <i className="fa-solid fa-arrow-left"></i>
+          <Link to={`/book/${book.prevbookId}`}> Prev book</Link>
         </button>
         <button>
-          <Link to={`/book/${book.nextbookId}`}>Next book</Link>
+          <Link to={`/book/${book.nextbookId}`}>Next book </Link>
+          <i className="fa-solid fa-arrow-right"></i>
         </button>
       </section>
     </section>

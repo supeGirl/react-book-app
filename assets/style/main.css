@@ -10,10 +10,13 @@
 
 /* Components */
 @import 'cmps/app-header.css';
+@import 'cmps/add-review.css';
 @import 'cmps/user-msg.css';
 @import 'cmps/home-page.css';
+@import 'cmps/book-page.css';
 @import 'cmps/book-list.css';
 @import 'cmps/book-filter.css';
 @import 'cmps/book-edit.css';
 @import 'cmps/app-loader.css';
 @import 'cmps/actions.css';
+@import 'cmps/star-rating.css';

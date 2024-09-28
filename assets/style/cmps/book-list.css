@@ -1,36 +1,71 @@
 .book-list {
-    list-style: none;
-    padding: 15px 0 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  padding: 15px 0 0;
+  gap: 10px;
 }
 
-.book-list li {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    background-color: var(--clr1bg);
+.book-list li ul {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  justify-content: space-around;
+  background-color: var(--clr1bg);
+  border-radius: 15px;
+  gap: 5px;
+  padding: 10px;
+}
+
+.book-list p {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
 }
 
 .book-price {
-    font-size: 1.2rem;
-  }
-  
-  .book-price.red {
-    color: red ;
-  }
-  
-  .book-price.green {
-    color: green;
-  }
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.book-price.red {
+  color: red;
+}
+
+.book-price.green {
+  color: green;
+}
+
 
 .sale{
-    background-color: rgb(204, 12, 57);
-    color: snow;
-    padding: clamp(0.25rem, 0.3vw + 0.3rem, 1rem);
-    font-size: clamp(0.75rem, 0.25rem, 1rem);
-    border-radius: 0.25rem;
-    margin-left: 5px;
+  background-color: rgb(204, 12, 57);
+  color: snow;
+  padding: clamp(0.32rem, 0.5vw + 0.2rem, 0.8rem); 
+  font-size: clamp(0.65rem, 0.75vw + 0.2rem, 0.9rem); 
+  border-radius: 0.25rem;
+
+}
+
+
+.book-action-btn button{
+  padding: clamp(0.32rem, 0.5vw + 0.2rem, 0.8rem); 
+  font-size: clamp(0.65rem, 0.75vw + 0.2rem, 0.9rem); 
+  background-color: var(--clr2bg);
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.book-action-btn button:hover {
+  background-color: var(--clr2);
+}
+
+@media (min-width: 600) {
+  
+
+.book-list {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
 }

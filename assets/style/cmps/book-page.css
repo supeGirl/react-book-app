@@ -1,0 +1,37 @@
+.book-details {
+  padding: 1em;
+}
+
+.book-header {
+  margin-bottom: 1em;
+}
+
+.book-title {
+  text-align: center;
+  color: var(--clr1);
+}
+
+.book-info {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1em;
+}
+
+.book-thumbnail {
+  width: 150px;
+  margin: 1em 1em 0 0;
+}
+
+.book-details-text {
+  flex-grow: 1;
+}
+
+.book-price {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reviews-container {
+  margin: 1em 0;
+}

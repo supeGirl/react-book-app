@@ -1,0 +1,98 @@
+.add-review {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.review-modal {
+  background-color: var(--clr2bg-light);
+  padding: 2rem; /* Increased padding for better spacing */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* Stretch to fill container */
+  transform: translateY(-20px); /* Starting position for animation */
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.review-modal h1 {
+  background-color: var(--clr1);
+  color: white;
+  padding: 10px;
+  font-size: 1.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+.input-field {
+  border: 1px solid var(--gray); /* Border color */
+  border-radius: 5px; /* Rounded corners */
+  padding: 0.5rem; /* Padding for inputs */
+  margin-bottom: 1rem; /* Space between inputs */
+  width: 100%; /* Full width */
+}
+
+.review-modal textarea {
+  display: block;
+  margin: 20px auto;
+  resize: none;
+}
+
+.review-form input,
+.review-form button {
+  margin: 5px;
+}
+
+.btn-toggle-modal {
+    align-self: flex-end; 
+    background: none; 
+    border: none; 
+    color: var(--clr1); 
+    padding: 0;
+}
+
+.review-container {
+  width: 90%;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.review-details {
+  position: relative;
+  border: 1px solid var(--clr2bg);
+  border-radius: 10px;
+  margin-block-start: 10px;
+  padding: 10px;
+}
+
+.review-details h4 {
+  color: var(--clr1);
+  font-size: 1.5em;
+}
+.review-details h5 {
+  color: var(--gray3);
+}
+
+.review-details .btn-remove-review {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 0.9rem;
+  border-radius: 0.6em;
+}
+
+.review-container p {
+  max-width: 90%;
+  word-wrap: break-word;
+}
+
+
+

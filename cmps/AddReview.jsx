@@ -1,11 +1,24 @@
-const {useState} = React
+import {StarRating} from './dynamic-inputs/StarRating.jsx'
+import {TextboxRating} from './TextboxRating.jsx'
+import {SelectRating} from './dynamic-inputs/SelectRating.jsx'
+const {useState, useRef, useEffect} = React
 
-export function AddReview({onAddReview}) {
+export function AddReview({onAddReview, toggleReview}) {
+  const inputRef = useRef()
+
   const [review, setReview] = useState({
-    fullName: '',
-    rating: 1,
-    readAt: '',
+    date: new Date().toISOString().slice(0, 10),
+    fullName: 'new name',
+    rating: 0,
+    txt: '',
+    selected: 0,
   })
+
+  const {date, fullName, txt, rating} = review
+
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [])
 
   function handleChange({target}) {
     const {name, value} = target
@@ -14,37 +27,57 @@ export function AddReview({onAddReview}) {
 
   function onSubmit(ev) {
     ev.preventDefault()
-    if (!review.fullName || !review.readAt) return
     onAddReview(review)
-    setReview({fullName: '', rating: 1, readAt: ''})
+    toggleReview()
   }
   return (
     <section className="add-review">
-      <h3>Add a Review</h3>
-      <form onSubmit={onSubmit}>
-        <label>
-          Full Name:
-          <input type="text" name="fullName" value={review.fullName} onChange={handleChange} placeholder="Your name" />
-        </label>
+      <div className="review-modal">
+      <button
+        className="btn-toggle-modal"
+        onClick={toggleReview}
+        aria-label="Close Review Modal" // Accessibility
+      >
+        X
+      </button>
+        <h1>Add review</h1>
 
-        <label>
-          Rating:
-          <select name="rating" value={review.rating} onChange={handleChange}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <option key={star} value={star}>
-                {star}
-              </option>
-            ))}
-          </select>
-        </label>
+        <form onSubmit={onSubmit} className="review-form">
+          <label className="bold-txt" htmlFor="fullname">
+            Full name:
+          </label>
+          <input
+            autoFocus
+            ref={inputRef}
+            placeholder="Enter full name"
+            name="fullName"
+            type="text"
+            id="fullname"
+            value={fullName}
+            onChange={handleChange}
+            autoComplete="off"
+            className="input-field name"
+          />
 
-        <label>
-          Read At:
-          <input type="date" name="readAt" value={review.readAt} onChange={handleChange} />
-        </label>
+          <label className="bold-txt" htmlFor="date">
+            Date:
+          </label>
 
-        <button type="submit">Add Review</button>
-      </form>
+          <input className="input-field date" type="date" id="date" name="date" value={date} onChange={handleChange} />
+
+          <div className="rate-by-choice">
+            <p className="bold-txt">Select rating type:</p>
+          </div>
+
+          <StarRating handleChange={handleChange} rating={rating} />
+          {/* <SelectRating handleChange={handleChange} rating={rating} /> */}
+          <TextboxRating handleChange={handleChange} txt={txt} />
+
+          <button type="submit" className="btn-save">
+            Save
+          </button>
+        </form>
+      </div>
     </section>
   )
 }

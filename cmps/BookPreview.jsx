@@ -15,7 +15,8 @@ export function BookPreview({book}) {
         onError={getDefaultUrl}
       />
       <h2>{book.title}</h2>
-      <p>
+     
+      <p className="book-price">
         {currencySymbol}
         {book.listPrice.amount}
         {book.listPrice.isOnSale && <span className="sale"> On Sale</span>}
