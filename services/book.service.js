@@ -15,7 +15,8 @@ export const bookService = {
   getFilterBy,
   saveReview,
   removeReview,
-  getEmptyReview
+  getEmptyReview,
+  getFilterFromSearchParams
 }
 
 function query(filterBy = {}) {
@@ -77,6 +78,22 @@ function getEmptyBook() {
     },
   }
 }
+
+function getFilterFromSearchParams(searchParams) {
+  const txt = searchParams.get('txt') || ''
+  const maxPrice= searchParams.get('maxPrice') || ''
+  const minPrice= searchParams.get('minPrice') || ''
+  const category = searchParams.get('category') || ''
+   const isOnSale = searchParams.get('isOnSale') === 'false'
+  return {
+      txt,
+      maxPrice,
+      minPrice,
+      category,
+      isOnSale
+  }
+}
+
 
 function getFilterBy() {
   return {

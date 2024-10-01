@@ -57,21 +57,21 @@ export function BookFilter({filterBy, onSetFilterBy}) {
       {/* Modal overlay for the background effect */}
       <div className="modal-overlay" onClick={toggleFilter}></div>
       <div className="modal-container">
-      <button className="close-btn" type="button" onClick={toggleFilter}>
-      &times;
-    </button>
+        <button className="close-btn" type="button" onClick={toggleFilter}>
+          &times;
+        </button>
 
         <form onSubmit={onSubmit} className="filter-form flex flex-column">
           <div className="extra-filters">
-            <div className="filter-max-price flex flex-column mb-2">
-              <label htmlFor="maxPrice">Max Price:</label>
+            <div className="filter-by-title flex flex-column mb-2">
+              <label htmlFor="title">Title:</label>
               <input
-                value={maxPrice || ''}
+                value={title}
                 onChange={handleChange}
-                type="number"
-                name="maxPrice"
-                id="maxPrice"
-                placeholder="Enter max price"
+                type="text"
+                name="title"
+                id="title"
+                placeholder="Search by title"
               />
             </div>
 
@@ -87,15 +87,15 @@ export function BookFilter({filterBy, onSetFilterBy}) {
               />
             </div>
 
-            <div className="filter-by-title flex flex-column mb-2">
-              <label htmlFor="title">Title:</label>
+            <div className="filter-max-price flex flex-column mb-2">
+              <label htmlFor="maxPrice">Max Price:</label>
               <input
-                value={title}
+                value={maxPrice || ''}
                 onChange={handleChange}
-                type="text"
-                name="title"
-                id="title"
-                placeholder="Search by title"
+                type="number"
+                name="maxPrice"
+                id="maxPrice"
+                placeholder="Enter max price"
               />
             </div>
 
